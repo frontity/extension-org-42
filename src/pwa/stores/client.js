@@ -1,6 +1,6 @@
-import base from './base';
+import Base from './base';
 
-export default base.actions(self => ({
+export default Base.actions(self => ({
   beforeCsr() {
     self.addProcessors();
   },

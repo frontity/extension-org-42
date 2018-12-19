@@ -1,10 +1,10 @@
-import { types, getParent } from 'mobx-state-tree';
-import procs from '../processors';
+import { types, getParent, getEnv } from 'mobx-state-tree';
 
-export default types.model('Org42').actions(self => ({
+export default types.model('Organization').actions(self => ({
   addProcessors() {
     const { h2r } = getParent(self, 1).theme;
+    const { processors } = getEnv(self).organization;
 
-    procs.forEach(proc => h2r.addProcessor(proc, 'low'));
+    processors.forEach(proc => h2r.addProcessor(proc, 'low'));
   },
 }));
