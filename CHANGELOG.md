@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/frontity/extension-org-42/compare/v1.0.0...v1.0.1) (2018-12-21)
+
+
+### Bug Fixes
+
+* **version:** forces semantic-release to create a new tag ([56dd8a7](https://github.com/frontity/extension-org-42/commit/56dd8a7))
+
 # 1.0.0 (2018-12-20)
 
 
