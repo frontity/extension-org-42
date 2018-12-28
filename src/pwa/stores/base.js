@@ -1,21 +1,25 @@
 import { types, getParent, getEnv } from 'mobx-state-tree';
 
-export default types.model('Organization').actions(self => {
-  const root = getParent(self, 1);
-
-  return {
+export default types
+  .model('Organization')
+  .views(self => ({
+    get root() {
+      return getParent(self, 1);
+    },
+  }))
+  .actions(self => ({
     addProcessors() {
-      const { h2r } = root.theme;
+      const { h2r } = self.root.theme;
       const { processors } = getEnv(self).organization;
 
       processors.forEach(proc => h2r.addProcessor(proc, 'low'));
     },
     scrollToHeader() {
-      const { initialUrl } = root.build;
+      const { initialUrl } = self.root.build;
       const [, page] = initialUrl.match(/\/(\d+)$/) || [null, null];
 
       if (page) {
-        const { type, id } = root.connection.selectedItem;
+        const { type, id } = self.root.connection.selectedItem;
         const element = window.document.querySelector(
           `h3[data-pagination-id='${type}_${id}_${page}']`,
         );
@@ -27,5 +31,4 @@ export default types.model('Organization').actions(self => {
         }
       }
     },
-  };
-});
+  }));
