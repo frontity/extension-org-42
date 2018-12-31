@@ -1,38 +1,47 @@
-import Waypoint from 'react-waypoint';
-
-let counter = 1;
-let lastPageEntered = 1;
+import PaginationWaypoint from '../components/PaginationWaypoint';
 
 export default {
   test: ({ component, ignore }) => !ignore && component === 'h3',
-  process: (element, { stores: { connection, analytics } }) => {
-    const page = counter;
-    counter += 1;
+  process: (
+    element,
+    {
+      item: {
+        entity: {
+          type,
+          id,
+          link,
+          headMeta: { title },
+        },
+      },
+      htmlTree,
+    },
+  ) => {
+    if (PaginationWaypoint.lastHtmlTree !== htmlTree) {
+      PaginationWaypoint.counter = 1;
+      PaginationWaypoint.lastHtmlTree = htmlTree;
+    }
+
+    const page = PaginationWaypoint.counter;
+    PaginationWaypoint.counter += 1;
 
     return {
       type: 'element',
-      component: Waypoint,
+      component: PaginationWaypoint,
       props: {
-        bottomOffset: '40%',
-        topOffset: '20%',
-        scrollableAncestor: 'window',
-        fireOnRapidScroll: true,
-        onEnter: () => {
-          if (lastPageEntered === page) return;
-
-          lastPageEntered = page;
-
-          const title = `${connection.head.title}${
-            page > 1 ? ` - Página ${page}` : ''
-          }`;
-          const location = `${connection.selectedItem.entity.link}${
-            page > 1 ? `/${page}` : ''
-          }`;
-
-          analytics.sendPageView({ title, location });
-        },
+        page,
+        title,
+        url: link,
       },
-      children: [{ ...element, ignore: true }],
+      children: [
+        {
+          ...element,
+          props: {
+            ...element.props,
+            'data-pagination-id': `${type}_${id}_${page}`,
+          },
+          ignore: true,
+        },
+      ],
     };
   },
 };
